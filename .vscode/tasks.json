@@ -1,0 +1,314 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+
+  // NOTE: All tasks that start with a "->" should be selected from the list. Other tasks
+  // are ran as part of the build process and should not be ran directly.
+  "version": "2.0.0",
+  "tasks": [
+    // This is the default build task that compiles the currently open
+    // file:
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "${file}",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "${fileDirname}/${fileBasenameNoExtension}.wasm"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Chapter 04: Clean",
+      "type": "shell",
+      "command": "rimraf",
+      "args": ["main.wasm"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-04-installing-deps"
+      }
+    },
+    {
+      "label": "-> Chapter 04: Build",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "main.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "main.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-04-installing-deps"
+      },
+      "dependsOn": ["Chapter 04: Clean"]
+    },
+    {
+      "label": "Chapter 05: Clean",
+      "type": "shell",
+      "command": "rimraf",
+      "args": [
+        "with-glue.html with-glue.js with-glue.wasm",
+        "custom-loading.js custom-loading.wasm",
+        "try-with-glue.wasm without-glue.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-05-create-load-module"
+      }
+    },
+    {
+      "label": "-> Chapter 05: With Glue",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "with-glue.c",
+        "-O3",
+        "-s", "WASM=1",
+        "-s", "USE_SDL=2",
+        "-o", "with-glue.html"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-05-create-load-module"
+      },
+      "dependsOn": ["Chapter 05: Clean"]
+    },
+    {
+      "label": "-> Chapter 05: Custom Loading",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "with-glue.c",
+        "-O3",
+        "-s", "WASM=1",
+        "-s", "USE_SDL=2",
+        "-s", "MODULARIZE=1",
+        "-o", "custom-loading.js"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-05-create-load-module"
+      },
+      "dependsOn": ["Chapter 05: Clean"]
+    },
+    {
+      "label": "-> Chapter 05: Try With Glue",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "with-glue.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "USE_SDL=2",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "try-with-glue.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-05-create-load-module"
+      },
+      "dependsOn": ["Chapter 05: Clean"]
+    },
+    {
+      "label": "-> Chapter 05: Without Glue",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "without-glue.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "without-glue.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-05-create-load-module"
+      },
+      "dependsOn": ["Chapter 05: Clean"]
+    },
+    {
+      "label": "Chapter 06: Clean",
+      "type": "shell",
+      "command": "rimraf",
+      "args": [
+        "js-with-glue.js js-with-glue.wasm js-without-glue.wasm",
+        "js-without-glue.wasm.map js-without-glue.wast"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-06-interact-with-js"
+      }
+    },
+    {
+      "label": "-> Chapter 06: JS With Glue",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "js-with-glue.c",
+        "-O3",
+        "-s", "WASM=1",
+        "-s", "MODULARIZE=1",
+        "-o", "js-with-glue.js"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-06-interact-with-js"
+      },
+      "dependsOn": ["Chapter 06: Clean"]
+    },
+    {
+      "label": "-> Chapter 06: JS Without Glue",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "js-without-glue.cpp",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "js-without-glue.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-06-interact-with-js"
+      },
+      "dependsOn": ["Chapter 06: Clean"]
+    },
+    {
+      "label": "-> Chapter 06: With Source Maps",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "js-without-glue.cpp",
+        "-O1",
+        "-g4",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "js-without-glue.wasm",
+        "--source-map-base",
+        "http://localhost:8080/chapter-06-interact-with-js"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-06-interact-with-js"
+      },
+      "dependsOn": ["Chapter 06: Clean"]
+    },
+    {
+      "label": "Chapter 07: Clean",
+      "type": "shell",
+      "command": "rimraf",
+      "args": ["src/assets/main.wasm"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-07-cook-the-books"
+      }
+    },
+    {
+      "label": "-> Chapter 07: Build",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "lib/main.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "src/assets/main.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-07-cook-the-books"
+      },
+      "dependsOn": ["Chapter 07: Clean"]
+    },
+    {
+      "label": "Chapter 10: Clean for LLVM",
+      "type": "shell",
+      "command": "rimraf",
+      "args": ["main.wasm"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-10-advanced-tools/compile-with-llvm"
+      }
+    },
+    {
+      "label": "-> Chapter 10: Build for LLVM",
+      "type": "shell",
+      "command": "wa",
+      "args": [
+        "compile",
+        "main.cpp",
+        "-o", "main.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-10-advanced-tools/compile-with-llvm"
+      },
+      "dependsOn": ["Chapter 10: Clean for LLVM"]
+    },
+    {
+      "label": "Chapter 10: Clean for Parallel",
+      "type": "shell",
+      "command": "rimraf",
+      "args": ["*.wasm"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-10-advanced-tools/parallel-wasm/src"
+      }
+    },
+    {
+      "label": "Chapter 10: Build Add for Parallel",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "lib/add.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "src/calc-add.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-10-advanced-tools/parallel-wasm"
+      },
+      "dependsOn": ["Chapter 10: Clean for Parallel"]
+    },
+    {
+      "label": "-> Chapter 10: Build for Parallel",
+      "type": "shell",
+      "command": "emcc",
+      "args": [
+        "lib/subtract.c",
+        "-Os",
+        "-s", "WASM=1",
+        "-s", "SIDE_MODULE=1",
+        "-s", "BINARYEN_ASYNC_COMPILATION=0",
+        "-o", "src/calc-subtract.wasm"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceRoot}/chapter-10-advanced-tools/parallel-wasm"
+      },
+      "dependsOn": ["Chapter 10: Build Add for Parallel"]
+    }
+  ]
+}
